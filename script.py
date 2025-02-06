@@ -34,7 +34,7 @@ class EntityAnnotation(BaseModel):
     start_pos: int = Field(ge=0)
     end_pos: int = Field(ge=0)
     text: str
-    annotation_type: Literal["Explicit"]  # Add other types if needed
+    annotation_type: Literal["Explicit", ""]  # Add other types if needed
     found_annotations: List[FuzzyAnnotation] = Field(default_factory=list)
 
 
@@ -71,8 +71,8 @@ def validate_annotations(lines: List[str]) -> Tuple[List[EntityAnnotation], List
         try:
             # Split line by tabs
             parts = line.strip().split("\t")
-            if len(parts) != 6:
-                raise ValueError(f"Expected 6 tab-separated fields, got {len(parts)}")
+            if len(parts) < 5:
+                raise ValueError(f"Expected at least 5 tab-separated fields, got {len(parts)}")
 
             # Parse line into model
             annotation = EntityAnnotation(
@@ -81,7 +81,7 @@ def validate_annotations(lines: List[str]) -> Tuple[List[EntityAnnotation], List
                 start_pos=int(parts[2]),
                 end_pos=int(parts[3]),
                 text=parts[4],
-                annotation_type=parts[5],
+                annotation_type=parts[5] if len(parts) > 5 else "",
             )
             annotations.annotations.append(annotation)
         except Exception as e:
