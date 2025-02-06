@@ -1,6 +1,7 @@
 import random
 import streamlit as st
 import streamlit.components.v1 as components
+import seaborn as sns
 
 from script import validate_annotations, get_match_location, FuzzyAnnotation
 
@@ -203,9 +204,12 @@ if st.session_state.base_text is not None and st.session_state.annotations is no
         annotation.entity_type
         for annotation in st.session_state.annotations.annotations
     )
-    color_map = {
-        entity: f"#{random.randint(0, 0xFFFFFF):06x}" for entity in unique_entity_types
-    }
+    color_map = dict(
+        zip(
+            unique_entity_types,
+            sns.color_palette("husl", len(unique_entity_types)).as_hex(),
+        )
+    )
 
     # Assign colors based on the dynamically generated color map
     for annotation in st.session_state.annotations.annotations:
