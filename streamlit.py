@@ -1,3 +1,4 @@
+import random
 import streamlit as st
 from script import validate_annotations, get_match_location, FuzzyAnnotation
 
@@ -80,19 +81,28 @@ if uploaded_annotations:
 if st.session_state.base_text is not None and st.session_state.annotations is not None:
     # Show success message
     st.success("Both files loaded successfully!")
-        # Process annotations and collect ranges
+    
+    # Process annotations and collect ranges
     ranges = []
     colors = []
-    entity_colors = {
-        'ConcentrationOfCompound': '#ffcccb',  # Light red
-        'Time': '#90EE90',  # Light green
-        'Temperature': '#87CEEB',  # Light blue
-        'Compound': '#DDA0DD',  # Light purple
-        'Volume': '#F0E68C',  # Light yellow
-        'SampleTreatment': '#FFB6C1',  # Light pink
-        'SpikedCompound': '#98FB98',  # Pale green
-        'SyntheticPeptide': '#87CEFA'  # Light sky blue
-    }
+    
+    # Dynamically generate distinct colors for each entity type
+    unique_entity_types = set(annotation.entity_type for annotation in st.session_state.annotations.annotations)
+    color_map = {entity: f'#{random.randint(0, 0xFFFFFF):06x}' for entity in unique_entity_types}
+    
+    # Assign colors based on the dynamically generated color map
+    for annotation in st.session_state.annotations.annotations:
+        match = get_match_location(annotation.text, st.session_state.base_text)
+        annotation.found_annotations.append(
+            FuzzyAnnotation(
+                start_pos=match.dest_start,
+                end_pos=match.dest_end,
+                src_start=match.src_start,
+                src_end=match.src_end,
+            )
+        )
+        ranges.append((match.dest_start, match.dest_end))
+        colors.append(color_map.get(annotation.entity_type, '#fff2cc'))
     
     # Process annotations
     for annotation in st.session_state.annotations.annotations:
@@ -106,7 +116,7 @@ if st.session_state.base_text is not None and st.session_state.annotations is no
             )
         )
         ranges.append((match.dest_start, match.dest_end))
-        colors.append(entity_colors.get(annotation.entity_type, '#fff2cc'))
+        colors.append(color_map.get(annotation.entity_type, '#fff2cc'))
 
 
       # Display highlighted text
