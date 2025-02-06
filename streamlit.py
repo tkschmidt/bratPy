@@ -51,7 +51,10 @@ if 'annotations' not in st.session_state:
     st.session_state.annotations = None
 
 # File uploaders
+st.title("BRAT Annotation Tool")
+st.header("Upload your original text")
 uploaded_base_text = st.file_uploader("Upload your original text", type=["txt"])
+st.header("Upload your GPT generated ANN file")
 uploaded_annotations = st.file_uploader("Upload your tab-separated file", type=["txt", "ann"])
 
 # Process base text
