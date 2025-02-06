@@ -1,0 +1,18 @@
+T1	ConcentrationOfCompound	85	101	10 pmol/µl	Explicit
+T2	Time	130	136	30 min	Explicit
+T3	Temperature	140	154	room temperature	Explicit
+T4	Compound	67	71	DMSO	Explicit
+T5	Compound	203	215	formic acid	Explicit
+T6	ConcentrationOfCompound	177	189	10% DMSO	Explicit
+T7	ConcentrationOfCompound	241	250	1 pmol/µl	Explicit
+T8	Temperature	275	280	-20 °C	Explicit
+T9	Volume	292	296	10 µl	Explicit
+T10	SampleTreatment	343	356	spiked	Explicit
+T11	SpikedCompound	359	379	retention time (RT) standards	Explicit
+T12	SpikedCompound	405	432	RT peptides (JPT Peptide Technologies)	Explicit
+T13	SyntheticPeptide	448	457	66 peptides	Explicit
+T14	ConcentrationOfCompound	511	521	200 fmol	Explicit
+T15	SpikedCompound	569	593	RT standard (Pierce, Thermo Scientific)	Explicit
+T16	SyntheticPeptide	606	617	15 13C-labeled peptides	Explicit
+T17	ConcentrationOfCompound	623	632	100 fmol	Explicit
+T18	Temperature	720	725	-20 °C	Explicit

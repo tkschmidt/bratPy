@@ -1,0 +1,13 @@
+Sample preparation for mass spectrometry. Dried peptide pools
+were initially solubilized in 100% DMSO to a concentration of
+10 pmol/µl by vortexing for 30 min at room temperature. The
+pools were then diluted to 10% DMSO using 1% formic acid in
+HPLCgrade water to a stock solution concentration of 1 pmol/µl
+and stored at −20 °C until use. 10 µl of the stock solution was
+transferred to a 96well plate and spiked with two retention
+time (RT) standards. The first set of RT peptides (JPT Peptide
+Technologies) consisted of 66 peptides with nonnaturally occurring peptide sequences (Supplementary Table 1). 200 fmol
+per peptide was used per injection. The second RT standard
+(Pierce, Thermo Scientific) comprised 15 13Clabeled peptides, and 100 fmol per peptide was used per injection. Samples
+in the resulting 96well plates were vacuum dried and stored
+at −20 °C until use
