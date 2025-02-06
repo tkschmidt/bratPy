@@ -72,7 +72,9 @@ def validate_annotations(lines: List[str]) -> Tuple[List[EntityAnnotation], List
             # Split line by tabs
             parts = line.strip().split("\t")
             if len(parts) < 5:
-                raise ValueError(f"Expected at least 5 tab-separated fields, got {len(parts)}")
+                raise ValueError(
+                    f"Expected at least 5 tab-separated fields, got {len(parts)}"
+                )
 
             # Parse line into model
             annotation = EntityAnnotation(
