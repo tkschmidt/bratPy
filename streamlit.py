@@ -37,7 +37,6 @@ if st.session_state.base_text is not None and st.session_state.annotations is no
     
     # Process annotations
     for annotation in st.session_state.annotations.annotations:
-        st.success(f"Processing annotation: {annotation.text}")
         match = get_match_location(annotation.text, st.session_state.base_text)
         annotation.found_annotations.append(
             FuzzyAnnotation(
@@ -50,8 +49,15 @@ if st.session_state.base_text is not None and st.session_state.annotations is no
     
     # Display results
     st.write("### Processed Annotations:")
-    for annotation in st.session_state.annotations.annotations:
-        st.write(f"- {annotation.text}: Found at position {annotation.found_annotations[-1].start_pos}-{annotation.found_annotations[-1].end_pos}")
+    annotation_data = [
+        {
+            "Text": annotation.text,
+            "Start Position": annotation.found_annotations[-1].start_pos,
+            "End Position": annotation.found_annotations[-1].end_pos
+        }
+        for annotation in st.session_state.annotations.annotations
+    ]
+    st.table(annotation_data)
 
 # Add a clear button to reset the state
 if st.button("Clear All"):
