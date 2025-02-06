@@ -214,8 +214,8 @@ if st.session_state.base_text is not None and st.session_state.annotations is no
 
     # Assign colors based on the dynamically generated color map
     for annotation in st.session_state.annotations.annotations:
-        # match = get_match_location(annotation.text, st.session_state.base_text)
-        match = get_match_location(annotation.gpt_context, st.session_state.base_text)
+        match = get_match_location(annotation.text, st.session_state.base_text)
+        # match = get_match_location(annotation.gpt_context, st.session_state.base_text)
         annotation.found_annotations.append(
             FuzzyAnnotation(
                 start_pos=match.dest_start,
@@ -225,6 +225,7 @@ if st.session_state.base_text is not None and st.session_state.annotations is no
                 context=st.session_state.base_text[
                     match.dest_start - 20 : match.dest_end + 20
                 ].replace("\n", " "),
+                score=match.score,
             )
         )
         ranges.append((match.dest_start, match.dest_end))
@@ -246,6 +247,7 @@ if st.session_state.base_text is not None and st.session_state.annotations is no
             "Start Position": annotation.found_annotations[-1].start_pos,
             "End Position": annotation.found_annotations[-1].end_pos,
             "Context": annotation.found_annotations[-1].context,
+            "Score": annotation.found_annotations[-1].score,
         }
         for annotation in st.session_state.annotations.annotations
     ]

@@ -1,8 +1,6 @@
-from rapidfuzz import fuzz, process
-from rapidfuzz.distance import Levenshtein
-from rapidfuzz.process_cpp import extract
+from rapidfuzz import fuzz
 from pydantic import BaseModel, Field, field_validator
-from typing import Literal, List, Tuple
+from typing import Literal, List, Tuple, Optional
 import re
 
 
@@ -27,6 +25,7 @@ class FuzzyAnnotation(BaseModel):
     src_start: int
     src_end: int
     context: str
+    score: Optional[float] = None
 
 
 class EntityAnnotation(BaseModel):
