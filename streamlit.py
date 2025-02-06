@@ -221,20 +221,9 @@ if st.session_state.base_text is not None and st.session_state.annotations is no
                 end_pos=match.dest_end,
                 src_start=match.src_start,
                 src_end=match.src_end,
-            )
-        )
-        ranges.append((match.dest_start, match.dest_end))
-        colors.append(color_map.get(annotation.entity_type, "#fff2cc"))
-
-    # Process annotations
-    for annotation in st.session_state.annotations.annotations:
-        match = get_match_location(annotation.text, st.session_state.base_text)
-        annotation.found_annotations.append(
-            FuzzyAnnotation(
-                start_pos=match.dest_start,
-                end_pos=match.dest_end,
-                src_start=match.src_start,
-                src_end=match.src_end,
+                context=st.session_state.base_text[
+                    match.dest_start - 20 : match.dest_end + 20
+                ].replace("\n", " "),
             )
         )
         ranges.append((match.dest_start, match.dest_end))
@@ -255,6 +244,7 @@ if st.session_state.base_text is not None and st.session_state.annotations is no
             "Entity Type": annotation.entity_type,
             "Start Position": annotation.found_annotations[-1].start_pos,
             "End Position": annotation.found_annotations[-1].end_pos,
+            "Context": annotation.found_annotations[-1].context,
         }
         for annotation in st.session_state.annotations.annotations
     ]

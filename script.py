@@ -26,6 +26,7 @@ class FuzzyAnnotation(BaseModel):
     end_pos: int
     src_start: int
     src_end: int
+    context: str
 
 
 class EntityAnnotation(BaseModel):
@@ -34,7 +35,9 @@ class EntityAnnotation(BaseModel):
     start_pos: int = Field(ge=0)
     end_pos: int = Field(ge=0)
     text: str
-    annotation_type: Literal["Explicit", ""]  # Add other types if needed
+    annotation_type: Literal[
+        "Explicit", "", "Inferred", "Predicted"
+    ]  # Add other types if needed
     found_annotations: List[FuzzyAnnotation] = Field(default_factory=list)
 
 
@@ -158,6 +161,7 @@ for annotation in annotations.annotations:
             end_pos=x.dest_end,
             src_start=x.src_start,
             src_end=x.src_end,
+            context=full_text[x.dest_start - 20 : x.dest_end + 20].replace("\n", " "),
         )
     )
 
