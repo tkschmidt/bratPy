@@ -2,6 +2,8 @@ import random
 import streamlit as st
 import streamlit.components.v1 as components
 import seaborn as sns
+from st_aggrid import AgGrid, GridOptionsBuilder
+import pandas as pd
 
 from script import validate_annotations, get_match_location, FuzzyAnnotation
 
@@ -103,7 +105,6 @@ def highlight_text_ranges(
     ranges_with_data = sorted(
         zip(ranges, colors, entity_types), key=lambda x: x[0][0], reverse=True
     )
-    print(ranges_with_data)
     # Insert spans with data attributes
     for (start, end), color, entity_type in ranges_with_data:
         chars.insert(end, "</span>")
@@ -248,17 +249,27 @@ if st.session_state.base_text is not None and st.session_state.annotations is no
 
     st.markdown(highlighted_html, unsafe_allow_html=True)
 
-    # Display results
-    st.write("### Processed Annotations:")
     annotation_data = [
         {
             "Text": annotation.text,
+            "Entity Type": annotation.entity_type,
             "Start Position": annotation.found_annotations[-1].start_pos,
             "End Position": annotation.found_annotations[-1].end_pos,
         }
         for annotation in st.session_state.annotations.annotations
     ]
-    st.table(annotation_data)
+
+    # Display results
+    # Convert annotation data to pandas DataFrame
+    df = pd.DataFrame(annotation_data)
+
+    # Configure grid options
+    gb = GridOptionsBuilder.from_dataframe(df)
+    gb.configure_default_column(sorteable=True, filterable=True)
+
+    st.write("### Processed Annotations:")
+    # Create the grid
+    AgGrid(df, gridOptions=gb.build(), allow_unsafe_jscode=True, theme="streamlit")
 
 # Add a clear button to reset the state
 if st.button("Clear All"):
