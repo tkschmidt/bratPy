@@ -72,9 +72,7 @@ def validate_annotations(lines: List[str]) -> Tuple[List[EntityAnnotation], List
             # Split line by tabs
             parts = line.strip().split("\t")
             if len(parts) != 6:
-                raise ValueError(
-                    f"Expected 6 tab-separated fields, got {len(parts)}"
-                )
+                raise ValueError(f"Expected 6 tab-separated fields, got {len(parts)}")
 
             # Parse line into model
             annotation = EntityAnnotation(
@@ -92,6 +90,52 @@ def validate_annotations(lines: List[str]) -> Tuple[List[EntityAnnotation], List
     return annotations, errors
 
 
+# Reintroducing the function for single string comparison with location
+def get_match_location(query, choice):
+    # Returns score and alignment information
+    result = fuzz.partial_ratio_alignment(query, choice)
+    return result
+
+
+# Reintroducing the function for finding matches in longer text
+def find_near_matches(query, text, score_cutoff=70):
+    results = []
+    matches = process.extract(
+        query, [text], scorer=fuzz.partial_ratio_alignment, score_cutoff=score_cutoff
+    )
+
+    for match in matches:
+        alignment_info = match[2]  # (score, start, end)
+        results.append(
+            {
+                "text": match[0],
+                "score": match[1],
+                "start": alignment_info[1],
+                "end": alignment_info[2],
+            }
+        )
+    return results
+
+
+def read_complete_text(filepath: str) -> str:
+    """
+    Reads a file and returns its entire contents as a single string.
+
+    Args:
+        filepath (str): Path to the file
+
+    Returns:
+        str: Complete contents of the file
+    """
+    try:
+        with open(filepath, "r", encoding="utf-8") as f:
+            return f.read()
+    except FileNotFoundError:
+        raise FileNotFoundError(f"File {filepath} not found")
+    except Exception as e:
+        raise RuntimeError(f"Error reading file: {str(e)}")
+
+
 # Example usage
 lines = read_annotation_file("example.txt")
 annotations, errors = validate_annotations(lines)
@@ -99,3 +143,23 @@ if errors:
     print("\n".join(errors))
 else:
     print("Annotation file is valid!")
+
+# Get complete text for matching
+full_text = read_complete_text("text.txt")
+
+# Get location for direct comparison
+for annotation in annotations.annotations:
+    x = get_match_location(annotation.text, full_text)
+    annotation.found_annotations.append(
+        FuzzyAnnotation(
+            start_pos=x.dest_start,
+            end_pos=x.dest_end,
+            src_start=x.src_start,
+            src_end=x.src_end,
+        )
+    )
+
+# Export to BRAT format
+brat_output = annotations.export_brat()
+with open("annotations.ann", "w") as f:
+    f.write(brat_output)
