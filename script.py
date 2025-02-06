@@ -38,6 +38,7 @@ class EntityAnnotation(BaseModel):
     annotation_type: Literal[
         "Explicit", "", "Inferred", "Predicted"
     ]  # Add other types if needed
+    gpt_context: str
     found_annotations: List[FuzzyAnnotation] = Field(default_factory=list)
 
 
@@ -87,6 +88,7 @@ def validate_annotations(lines: List[str]) -> Tuple[List[EntityAnnotation], List
                 end_pos=int(parts[3]),
                 text=parts[4],
                 annotation_type=parts[5] if len(parts) > 5 else "",
+                gpt_context=parts[6] if len(parts) > 6 else "",
             )
             annotations.annotations.append(annotation)
         except Exception as e:
@@ -100,26 +102,6 @@ def get_match_location(query, choice):
     # Returns score and alignment information
     result = fuzz.partial_ratio_alignment(query, choice)
     return result
-
-
-# Reintroducing the function for finding matches in longer text
-def find_near_matches(query, text, score_cutoff=70):
-    results = []
-    matches = process.extract(
-        query, [text], scorer=fuzz.partial_ratio_alignment, score_cutoff=score_cutoff
-    )
-
-    for match in matches:
-        alignment_info = match[2]  # (score, start, end)
-        results.append(
-            {
-                "text": match[0],
-                "score": match[1],
-                "start": alignment_info[1],
-                "end": alignment_info[2],
-            }
-        )
-    return results
 
 
 def read_complete_text(filepath: str) -> str:

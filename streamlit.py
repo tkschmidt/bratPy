@@ -214,7 +214,8 @@ if st.session_state.base_text is not None and st.session_state.annotations is no
 
     # Assign colors based on the dynamically generated color map
     for annotation in st.session_state.annotations.annotations:
-        match = get_match_location(annotation.text, st.session_state.base_text)
+        # match = get_match_location(annotation.text, st.session_state.base_text)
+        match = get_match_location(annotation.gpt_context, st.session_state.base_text)
         annotation.found_annotations.append(
             FuzzyAnnotation(
                 start_pos=match.dest_start,
